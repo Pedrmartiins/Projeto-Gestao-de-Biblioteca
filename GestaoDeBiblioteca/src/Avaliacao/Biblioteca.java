@@ -229,8 +229,6 @@ public class Biblioteca {
                     } else {
                         return false;
                     }
-
-
                 }
                 linha = br.readLine();
             }
@@ -297,44 +295,37 @@ public class Biblioteca {
             }
         }
     }
-        private void atualizarDisponibilidade(String isbn, boolean disponibilidade, String pathLivros) throws FileNotFoundException {
 
-            ArrayList<String> salvar = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader(pathLivros))) {
-                String linha = br.readLine();
-                while (linha != null) {
-                    String valor[] = linha.split(",");
+    private void atualizarDisponibilidade(String isbn, boolean disponibilidade, String pathLivros) throws FileNotFoundException {
 
-                    if (valor.length > 0 && valor[2].equals(isbn)) {
-                        valor[3] = String.valueOf(disponibilidade);
-                        linha = String.join(",", valor);
-                    }
-                    salvar.add(linha);
-                    linha = br.readLine();
+        ArrayList<String> salvar = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(pathLivros))) {
+            String linha = br.readLine();
+            while (linha != null) {
+                String valor[] = linha.split(",");
 
-
-                    System.out.println(salvar);
-
+                if (valor.length > 0 && valor[2].equals(isbn)) {
+                    valor[3] = String.valueOf(disponibilidade);
+                    linha = String.join(",", valor);
                 }
-            } catch (IOException e) {
-                System.out.println("Erro: " + e.getMessage());
+                salvar.add(linha);
+                linha = br.readLine();
+                System.out.println(salvar);
             }
-
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathLivros))){
-                for (String s : salvar){
-                    bw.write(s);
-                    bw.newLine();
-                }
-            } catch (IOException e) {
-                System.out.println("Erro: " + e.getMessage());
-
-            }
+        } catch (IOException e) {
+            System.out.println("Erro: " + e.getMessage());
         }
 
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathLivros))) {
+            for (String s : salvar) {
+                bw.write(s);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Erro: " + e.getMessage());
 
-
-
-
+        }
+    }
 }
 
 
