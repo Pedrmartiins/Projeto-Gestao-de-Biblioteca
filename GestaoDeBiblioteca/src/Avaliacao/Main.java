@@ -1,9 +1,10 @@
 package Avaliacao;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
 
         Livro livro = new Livro();
@@ -42,9 +43,11 @@ public class Main {
                     } else {
                         livro = new Livro(titulo, autor, isbn);
                         biblioteca.cadastrarLivro(livro);
+                        biblioteca.escreverArquivoLivro();
                         System.out.println("Livro cadastrado com sucesso!");
 
                     }
+
 
                     break;
 
@@ -66,16 +69,20 @@ public class Main {
 
                 case 3:
                     System.out.print("ISBN do livro para emprestar: ");
-                    String isbnEmprestimo = scanner.nextLine();
+                    isbn = scanner.nextLine();
                     System.out.print("Número de registro do usuário: ");
-                    String numeroRegistroEmprestimo = scanner.nextLine();
-                    boolean emprestimo = biblioteca.emprestarLivro(isbnEmprestimo, numeroRegistroEmprestimo);
-                    if (emprestimo) {
-                        System.out.println("Livro emprestado com sucesso!");
-                    } else {
-                        System.out.println(
-                                "Não foi possível emprestar o livro. Verifique se o livro está disponível e se o usuário está registrado.");
-                    }
+                    String numeroDeRegistro = scanner.nextLine();
+
+//                    if (biblioteca.disponibilidadeDoLivro(isbn)) {
+                    biblioteca.disponibilidadeDoLivro(isbn);
+                    biblioteca.emprestimoNovo(isbn, numeroDeRegistro);
+
+                    biblioteca.disponibilidadeDoLivro(isbn);
+
+//                        System.out.println("Livro emprestado com sucesso");
+//                    } else {
+//                        System.out.println("nao foi possivel emprestar ");
+//                    }
                     break;
 
                 case 4:
@@ -108,18 +115,35 @@ public class Main {
                     break;
 
                 case 6:
+                    isbn = scanner.nextLine();
+                    //  biblioteca.acharLivro(isbn);
+                    biblioteca.disponibilidadeDoLivro(isbn);
 
-                    biblioteca.ExibirUsers();
+                    numeroDeRegistro = scanner.nextLine();
+                    biblioteca.acharUser(numeroDeRegistro);
+                    // if (biblioteca.acharLivro(isbn)){
+                    //      System.out.println("Achei o livro "+ biblioteca.acharLivro(isbn));
+
+                    // }else {
+                    //      System.out.println("Nao achei");
+                    //   }
+                    // biblioteca.ExibirUsers();
                     break;
 
 
                 case 7:
                     continuar = false;
-                    biblioteca.escreverArquivo();
+                    biblioteca.escreverArquivoUser();
+
                     System.out.println("Saindo do sistema. Até logo!");
 
                     break;
 
+                case 8:
+
+                    biblioteca.lerLivros();
+
+                    break;
 
 
                 default:

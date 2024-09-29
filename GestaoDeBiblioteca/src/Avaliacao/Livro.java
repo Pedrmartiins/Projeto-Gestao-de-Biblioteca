@@ -20,7 +20,7 @@ public class Livro {
         this.titulo = titulo;
         this.autor = autor;
         this.isbn = isbn;
-        this.disponibilidade = true; // Novo livro começa disponível
+this. disponibilidade = true;
     }
 
     public Livro() {
@@ -62,11 +62,11 @@ public class Livro {
     }
 
     // Método para exibir informações do livro
-    @Override
-    public String toString() {
-        return "Título: " + titulo + ", Autor: " + autor + ", ISBN: " + isbn + ", Disponível: "
-                + (disponibilidade ? "Sim" : "Não");
-    }
+ //   @Override
+//    public String toString() {
+//        return "Título: " + titulo + ", Autor: " + autor + ", ISBN: " + isbn + ", Disponível: "
+//                + (disponibilidade ? "Sim" : "Não");
+//    }
 
     public boolean verificaIsbn(String isbn) {
         if (this.isbn != null && this.isbn.equals(isbn)) {
