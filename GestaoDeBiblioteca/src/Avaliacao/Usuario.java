@@ -44,11 +44,6 @@ public class Usuario {
         livrosEmprestados.remove(livro);
     }
 
-    // M todo para exibir informa  es do usu rio
-    @Override
-    public String toString() {
-        return   nome + ","+  numeroRegistro;
-    }
     public boolean verificaUsuario(String numeroRegistro) {
         if (this.numeroRegistro != null && this.numeroRegistro.equals(numeroRegistro)) {
             return true;

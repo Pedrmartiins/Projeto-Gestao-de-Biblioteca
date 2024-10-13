@@ -17,7 +17,7 @@ public class Biblioteca {
 
     }
 
-    // Métodos de gerenciamento
+
     public void cadastrarLivro(Livro livro) {
         livros.add(livro);
     }
@@ -26,64 +26,6 @@ public class Biblioteca {
         this.usuario.add(usuario);
     }
 
-    public boolean emprestarLivro(String isbn, String numeroDeRegistro) {
-        Livro livro = buscarLivroPorIsbn(isbn);
-        Usuario usuario = buscarUsuarioPorNumeroRegistro(numeroDeRegistro);
-
-        if (livro != null && usuario != null && livro.isDisponibilidade()) {
-            livro.setDisponibilidade(false);
-            usuario.adicionarLivroEmprestado(livro);
-            return true;
-
-        }
-        return false;
-    }
-
-    public boolean devolverLivro(String isbn, String numeroRegistro) {
-        Livro livro = buscarLivroPorIsbn(isbn);
-        Usuario usuario = buscarUsuarioPorNumeroRegistro(numeroRegistro);
-
-        if (livro != null && usuario != null && !livro.isDisponibilidade()) {
-            livro.setDisponibilidade(true);
-            usuario.removerLivroEmprestado(livro);
-            return true;
-        }
-        return false;
-    }
-
-    public ArrayList<Livro> exibirLivros() {
-        ArrayList<Livro> exibirLivro = new ArrayList<>();
-        for (Livro l : this.livros) {
-            if (l.isDisponibilidade() == true) {
-                exibirLivro.add(l);
-            }
-
-        }
-        return exibirLivro;
-
-    }
-
-    // Métodos auxiliares
-
-    public Livro buscarLivroPorIsbn(String isbn) {
-        for (Livro livro : livros) {
-            if (livro.getIsbn().equals(isbn)) {
-                return livro;
-            }
-
-        }
-        return null;
-
-    }
-
-    private Usuario buscarUsuarioPorNumeroRegistro(String numeroRegistro) {
-        for (Usuario usuario : usuario) {
-            if (usuario.getNumeroRegistro().equals(numeroRegistro)) {
-                return usuario;
-            }
-        }
-        return null;
-    }
 
     public boolean isbnJaCadastrado(String isbn) {
         for (Livro livro : livros) {
@@ -94,21 +36,16 @@ public class Biblioteca {
         return false;
     }
 
-    public boolean usuarioJaCadastrado(String numeroRegistro) {
+    public boolean usuarioJaCadastrado(String numeroDeRegistro) {
         for (Usuario usuario : usuario) {
-            if (usuario.verificaUsuario(numeroRegistro)) {
+            if (usuario.verificaUsuario(numeroDeRegistro)) {
                 return true;
             }
         }
         return false;
     }
 
-    public void retornaUsers() {
-        for (Usuario u : usuario) {
-            System.out.println(u);
-        }
 
-    }
 
 
     public void lerLivros() {
@@ -118,13 +55,13 @@ public class Biblioteca {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String linha = br.readLine();
             while (linha != null) {
-                System.out.println(linha);
+
                 linha = br.readLine();
             }
         } catch (IOException e) {
             System.out.println("Erro: " + e.getMessage());
         }
-        // Retorna a lista de livros
+
     }
 
 
@@ -132,10 +69,11 @@ public class Biblioteca {
 
         String path = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/Livros.csv";
 
-        try (FileWriter fw = new FileWriter(path, true); // 'true' para adicionar ao final
-
-             BufferedWriter bw = new BufferedWriter(fw)) {
-
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, true))) {
+            if (Files.size(Paths.get(path)) == 0) {
+                bw.write("Titulo,Autor,Isbn,Disponibilidade");
+                bw.newLine();
+            }
 
             for (Livro l : livros) {
                 System.out.println(l);
@@ -186,7 +124,7 @@ public class Biblioteca {
         }
     }
 
-    public Livro acharLivro(String isbn) {
+    public boolean acharLivro(String isbn) {
         String pathLivros = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/Livros.csv";
 
 
@@ -196,8 +134,8 @@ public class Biblioteca {
 
                 String valor[] = linha.split(",");
                 if (valor.length > 0 && valor[2].equals(isbn)) {
-                    System.out.println("Achei o livro " + linha);
-                    return new Livro(valor[0], valor[1], valor[2]);
+
+                    return true;
 
                 }
                 linha = br.readLine();
@@ -208,8 +146,8 @@ public class Biblioteca {
             System.out.println("Erro: " + e.getMessage());
 
         }
-        // Retorna a lista de livros
-        return null;
+
+        return false;
 
     }
 
@@ -224,11 +162,13 @@ public class Biblioteca {
                 String valor[] = linha.split(",");
                 if (valor.length >= 4 && valor[2].equals(isbn)) {
                     if (valor[3].equals("true")) {
-                        System.out.println("Disponivel");
+
                         return true;
                     } else {
                         return false;
                     }
+
+
                 }
                 linha = br.readLine();
             }
@@ -241,7 +181,7 @@ public class Biblioteca {
 
     }
 
-    public Usuario acharUser(String numeroDeRegistro) {
+    public boolean acharUser(String numeroDeRegistro) {
         String path = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/Usuarios.csv";
 
 
@@ -251,11 +191,11 @@ public class Biblioteca {
 
                 String valor[] = linha.split(",");
                 if (valor.length > 0 && valor[1].equals(numeroDeRegistro)) {
-                    System.out.println("Achei o usuario " + linha);
-                    return new Usuario(valor[0], valor[1]);
+                    return true;
 
                 }
                 linha = br.readLine();
+
             }
 
 
@@ -263,18 +203,15 @@ public class Biblioteca {
             System.out.println("Erro: " + e.getMessage());
 
         }
-        // Retorna a lista de livros
 
-
-        return null;
-
+        return false;
     }
 
     public void emprestimoNovo(String isbn, String numeroDeRegistro) throws IOException {
         String path1 = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/LivrosEmprestados.csv";
         String pathLivros = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/Livros.csv";
 
-        if (acharUser(numeroDeRegistro) != null && acharLivro(isbn) != null && disponibilidadeDoLivro(isbn)
+        if (acharUser(numeroDeRegistro)  && acharLivro(isbn)  && disponibilidadeDoLivro(isbn)
         ) {
 
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(path1, true))) {
@@ -296,6 +233,45 @@ public class Biblioteca {
         }
     }
 
+
+    public void devolucaoNova(String isbn, String numeroDeRegistro) throws IOException {
+        String path1 = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/LivrosEmprestados.csv";
+        String pathLivros = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/Livros.csv";
+
+        if (acharUser(numeroDeRegistro) == true||false && acharLivro(isbn)  && disponibilidadeDoLivro(isbn) != true
+        ) {
+
+            ArrayList<String> salvar = new ArrayList<>();
+            try (BufferedReader br = new BufferedReader(new FileReader(path1))) {
+                String linha = br.readLine();
+                while (linha != null) {
+                    String valor[] = linha.split(",");
+
+                    if (valor.length > 1 && !(valor[0].equals(numeroDeRegistro) && valor[1].equals(isbn))) {
+                        salvar.add(linha);
+                    }
+                    linha = br.readLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+
+            try(BufferedWriter bw = new BufferedWriter(new FileWriter(path1))){
+
+                for (String s : salvar) {
+                    bw.write(s);
+                    bw.newLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Erro: " + e.getMessage());
+
+            }
+            atualizarDisponibilidade(isbn, true, pathLivros);
+        }
+    }
+
+
+
     private void atualizarDisponibilidade(String isbn, boolean disponibilidade, String pathLivros) throws FileNotFoundException {
 
         ArrayList<String> salvar = new ArrayList<>();
@@ -310,7 +286,10 @@ public class Biblioteca {
                 }
                 salvar.add(linha);
                 linha = br.readLine();
-                System.out.println(salvar);
+
+
+
+
             }
         } catch (IOException e) {
             System.out.println("Erro: " + e.getMessage());
@@ -326,6 +305,87 @@ public class Biblioteca {
 
         }
     }
+
+    public boolean livrosDisponiveis() throws IOException {
+        String pathLivros = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/Livros.csv";
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader(pathLivros))) {
+            String linha = br.readLine();
+            while (linha != null) {
+
+                String valor[] = linha.split(",");
+                if (valor.length >= 4 && valor[3].equals("true")) {
+                    System.out.println(linha);
+return true;
+                }
+
+                linha = br.readLine();
+                }
+
+
+
+
+        } catch (IOException e) {
+            System.out.println("Erro: " + e.getMessage());
+
+        }
+        return false;
+
+    }
+    public boolean acharUserEmprestados(String numeroDeRegistro) {
+        String path = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/LivrosEmprestados.csv";
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String linha = br.readLine();
+            while (linha != null) {
+
+                String valor[] = linha.split(",");
+                if (valor.length > 0 && valor[0].equals(numeroDeRegistro)) {
+                    return true;
+
+                }
+                linha = br.readLine();
+
+            }
+
+
+        } catch (IOException e) {
+            System.out.println("Erro: " + e.getMessage());
+
+        }
+
+        return false;
+    }
+
+    public boolean acharLivroEmprestado(String isbn) {
+        String pathLivros = "/Users/macbookpro/Documents/Projeto-Gestao-de-Biblioteca/ArquivoCSV/LivrosEmprestados.csv";
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader(pathLivros))) {
+            String linha = br.readLine();
+            while (linha != null) {
+
+                String valor[] = linha.split(",");
+                if (valor.length > 0 && valor[1].equals(isbn)) {
+
+                    return true;
+
+                }
+                linha = br.readLine();
+            }
+
+
+        } catch (IOException e) {
+            System.out.println("Erro: " + e.getMessage());
+
+        }
+
+        return false;
+
+    }
+
 }
 
 

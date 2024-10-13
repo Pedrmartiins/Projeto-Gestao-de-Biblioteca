@@ -55,13 +55,15 @@ public class Main {
                     System.out.print("Nome do usuário: ");
                     String nome = scanner.nextLine();
                     System.out.print("Número de registro do usuário: ");
-                    String numeroRegistro = scanner.nextLine();
+                    String numeroDeRegistro = scanner.nextLine();
 
-                    if (biblioteca.usuarioJaCadastrado(numeroRegistro)) {
+                    if (biblioteca.usuarioJaCadastrado(numeroDeRegistro) || biblioteca.acharUser(numeroDeRegistro)) {
                         System.out.println("Usuario já cadastrado");
                     } else {
-                        Usuario usuario = new Usuario(nome, numeroRegistro);
+                        Usuario usuario = new Usuario(nome, numeroDeRegistro);
                         biblioteca.cadastrarUsuario(usuario);
+                        biblioteca.escreverArquivoUser();
+
                         System.out.println("Usuário cadastrado com sucesso!");
 
                     }
@@ -71,80 +73,53 @@ public class Main {
                     System.out.print("ISBN do livro para emprestar: ");
                     isbn = scanner.nextLine();
                     System.out.print("Número de registro do usuário: ");
-                    String numeroDeRegistro = scanner.nextLine();
+                    numeroDeRegistro = scanner.nextLine();
 
-//                    if (biblioteca.disponibilidadeDoLivro(isbn)) {
-                    biblioteca.disponibilidadeDoLivro(isbn);
-                    biblioteca.emprestimoNovo(isbn, numeroDeRegistro);
+                    if (biblioteca.acharUser(numeroDeRegistro) != true) {
+                        System.out.println("Usuario inexistente");
+                    } else if (biblioteca.disponibilidadeDoLivro(isbn) != true || biblioteca.acharLivro(isbn) != true) {
+                        System.out.println("Livro ja foi emprestado ou não está cadastrado.");
+                    } else {
+                        biblioteca.emprestimoNovo(isbn, numeroDeRegistro);
+                    }
 
-                    biblioteca.disponibilidadeDoLivro(isbn);
-
-//                        System.out.println("Livro emprestado com sucesso");
-//                    } else {
-//                        System.out.println("nao foi possivel emprestar ");
-//                    }
                     break;
 
                 case 4:
                     System.out.print("ISBN do livro para devolver: ");
-                    String isbnDevolucao = scanner.nextLine();
+                    isbn = scanner.nextLine();
                     System.out.print("Número de registro do usuário: ");
-                    String numeroRegistroDevolucao = scanner.nextLine();
-                    boolean devolucao = biblioteca.devolverLivro(isbnDevolucao, numeroRegistroDevolucao);
-                    if (devolucao) {
+                    numeroDeRegistro = scanner.nextLine();
+
+
+                    if (biblioteca.acharLivroEmprestado(isbn) != true || biblioteca.acharUserEmprestados(numeroDeRegistro) != true) {
+                        System.out.println("Não foi possível devolver o livro. Verifique se o livro está emprestado.");
+                    }
+                    else if (biblioteca.disponibilidadeDoLivro(isbn) != true) {
+                        biblioteca.devolucaoNova(isbn, numeroDeRegistro);
                         System.out.println("Livro devolvido com sucesso!");
-                    } else {
-                        System.out.println(
-                                "Não foi possível devolver o livro. Verifique se o livro está emprestado e se o usuário está registrado.");
+
                     }
                     break;
 
                 case 5:
-
-                    if (biblioteca.exibirLivros().isEmpty()) {
-                        System.out.println("Não há livros disponiveis!");
-
-                    } else {
-                        System.out.println("Livros disponíveis:");
-                        for (Livro l1 : biblioteca.exibirLivros())
-                            System.out.println(
-                                    "Titulo: " + l1.getTitulo() + " Autor: " + l1.getAutor() + " Isbn: " + l1.getIsbn());
-
+                    if (biblioteca.livrosDisponiveis() == false) {
+                        System.out.println("Nenhum livro disponivel");
                     }
-
                     break;
 
                 case 6:
-                    isbn = scanner.nextLine();
-                    //  biblioteca.acharLivro(isbn);
-                    biblioteca.disponibilidadeDoLivro(isbn);
-
-                    numeroDeRegistro = scanner.nextLine();
-                    biblioteca.acharUser(numeroDeRegistro);
-                    // if (biblioteca.acharLivro(isbn)){
-                    //      System.out.println("Achei o livro "+ biblioteca.acharLivro(isbn));
-
-                    // }else {
-                    //      System.out.println("Nao achei");
-                    //   }
-                    // biblioteca.ExibirUsers();
+                    biblioteca.ExibirUsers();
                     break;
 
 
                 case 7:
                     continuar = false;
-                    biblioteca.escreverArquivoUser();
+
 
                     System.out.println("Saindo do sistema. Até logo!");
 
                     break;
-
-                case 8:
-
-                    biblioteca.lerLivros();
-
-                    break;
-
 
                 default:
                     System.out.println("Opção inválida. Tente novamente.");

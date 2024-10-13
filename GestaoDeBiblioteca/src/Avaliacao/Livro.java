@@ -61,12 +61,6 @@ this. disponibilidade = true;
         this.disponibilidade = disponibilidade;
     }
 
-    // Método para exibir informações do livro
- //   @Override
-//    public String toString() {
-//        return "Título: " + titulo + ", Autor: " + autor + ", ISBN: " + isbn + ", Disponível: "
-//                + (disponibilidade ? "Sim" : "Não");
-//    }
 
     public boolean verificaIsbn(String isbn) {
         if (this.isbn != null && this.isbn.equals(isbn)) {
